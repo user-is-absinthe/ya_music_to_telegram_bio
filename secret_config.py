@@ -1,3 +1,3 @@
-LOGIN_MUSIC = r'mail_login'
-PASSWORD_MUSIC = r'mail_pass'
-TOKEN_MUSIC = r'music_token'
+LOGIN_MUSIC = r'ya_mail'
+PASSWORD_MUSIC = r'ya_pass'
+TOKEN_MUSIC = r'ya_token'
