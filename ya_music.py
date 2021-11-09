@@ -1,14 +1,20 @@
+import sys
+
 from yandex_music import Client
 
 # from secret_config import LOGIN
 # from secret_config import PASSWORD
-from secret_config import TOKEN_MUSIC
+from secret_config import YA_TOKEN
 
 
 # client = Client.from_credentials(LOGIN, PASSWORD)
-client = Client(TOKEN_MUSIC)
+client = Client(YA_TOKEN)
 
 queues = client.queues_list()
+print(queues)
+if len(queues) == 0:
+    print('Очередь прослушивания куда-то потерялась.')
+    sys.exit(1)
 # Последняя проигрываемая очередь всегда в начале списка
 last_queue = client.queue(queues[0].id)
 
@@ -25,7 +31,9 @@ print(f'Ссылка на трек: https://music.yandex.com/track/{ track_id }'
 
 artists = ', '.join(last_track.artists_name())
 title = last_track.title
-print(f'Сейчас играет: {artists} - {title}')
+line = f'Сейчас играет: { artists } - { title }: https://music.yandex.com/track/{ track_id }'
+print(line)
+print(len(line))
 
 
 # а тут надо помнить,

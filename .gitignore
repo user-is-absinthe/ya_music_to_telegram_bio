@@ -141,4 +141,5 @@ cython_debug/
 # my files
 secret_config.py
 .idea/
+*.session
 
