@@ -1,8 +1,10 @@
-# import asyncio
+import asyncio
+import time
 
-import telethon
+# import telethon
 
 from telethon import TelegramClient
+from telethon import functions
 
 from secret_config import TG_API_ID
 from secret_config import TG_API_HASH
@@ -15,11 +17,28 @@ from secret_config import TG_API_HASH
 #
 # print(client.get_me().stringify())
 
-with TelegramClient('clacson_session', TG_API_ID, TG_API_HASH) as client:
-    # client(telethon.tl.functions.account.UpdateProfileRequest(about='test'))
-    result = client(telethon.functions.account.UpdateProfileRequest(about='test'))
-    # await client
-    print(result)
+
+def camel_case(line: str, last_index: int = -1):
+    print(last_index)
+    last_index += 1
+    if last_index == len(line):
+        last_index = 0
+    line = line.lower()
+    new_line = ''
+    for index, letter in enumerate(line):
+        if index == last_index:
+            new_line += letter.upper()
+        else:
+            new_line += letter
+    return new_line, last_index
+
+
+async def main(line: str):
+    async with TelegramClient('clacson_session', TG_API_ID, TG_API_HASH) as client:
+        # client(telethon.tl.functions.account.UpdateProfileRequest(about='test'))
+        await client(functions.account.UpdateProfileRequest(about=line))
+        # client
+        print(line)
 
 # async def re_tg():
 #     with TelegramClient('clacson_session', TG_API_ID, TG_API_HASH) as client:
@@ -31,4 +50,14 @@ with TelegramClient('clacson_session', TG_API_ID, TG_API_HASH) as client:
 #     loop = asyncio.get_event_loop()
 #     loop.run_until_complete(re_tg())
 #     loop.close()
+
+this_index = -1
+# i = 0
+while True:
+    this_line, this_index = camel_case('test description', this_index)
+    asyncio.run(main(this_line))
+    time.sleep(1)
+
+    # print(i)
+    # i += 1
 
