@@ -21,7 +21,9 @@ last_queue = client.queue(queues[0].id)
 last_track_id = last_queue.get_current_track()
 last_track = last_track_id.fetch_track()
 
-track_id = last_track_id.track_id
+track_id = last_track_id.track_id  # return str
+
+# print(track_id, type(track_id))
 
 duration_last_track = last_track.duration_ms / 1000
 
