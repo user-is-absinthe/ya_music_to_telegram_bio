@@ -18,30 +18,22 @@ def time_in_the_city(city_name: str):
 
 def get_music(client):
     queues = client.queues_list()
-    # print(queues)
     if len(queues) == 0:
-        # print('Очередь прослушивания куда-то потерялась.')
         return -1, -1, -1
     # Последняя проигрываемая очередь всегда в начале списка
     last_queue = client.queue(queues[0].id)
-
     last_track_id = last_queue.get_current_track()
     last_track = last_track_id.fetch_track()
     track_id = last_track_id.track_id
-    # print(duration_last_track)
-    # print(f'Link to track: https://music.yandex.com/track/{track_id}')
-    # artists = ', '.join(last_track.artists_name())
-    # line = f'Сейчас играет: {artists} - {title}: https://music.yandex.com/track/{track_id}'
-    # print(line)
-    # print(len(line))
     title = last_track.title
     # artists = last_track.artists_name()
+    # artists = ', '.join(last_track.artists_name())
     duration = last_track.duration_ms / 1000
     return title, track_id, duration
 
 
 async def change_tg_bot(line: str):
-    async with telethon.TelegramClient('clacson_session', TG_API_ID, TG_API_HASH) as client:
+    async with telethon.TelegramClient('telegram_session', TG_API_ID, TG_API_HASH) as client:
         await client(telethon.functions.account.UpdateProfileRequest(about=line))
 
 
@@ -49,7 +41,7 @@ def main():
     client = Client(YA_TOKEN, report_new_fields=False)
     next_track_time = -1
     last_track_id = ''
-    this_line = ''
+    last_minute = time.localtime().tm_min
     while True:
         time.sleep(TIME_TO_WAIT)
 
@@ -71,6 +63,8 @@ def main():
         elif time.time() <= next_track_time:
             # this_line = time_in_the_city('Moscow')
             continue
+        elif last_minute == time.localtime().tm_min:
+            continue
         else:
             # this_line = 'Something went wrong.'
             this_line = time_in_the_city('Moscow')
@@ -78,10 +72,7 @@ def main():
         try:
             asyncio.run(change_tg_bot(this_line))
         except telethon.errors.FloodWaitError as e:
-            # print('Need to wait:')
-            # print(e.seconds)
             time.sleep(e.seconds)
-            # break
 
 
 if __name__ == '__main__':
