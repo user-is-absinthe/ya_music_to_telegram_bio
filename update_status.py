@@ -7,6 +7,7 @@ from yandex_music import Client
 from secret_config import TG_API_ID
 from secret_config import TG_API_HASH
 from secret_config import YA_TOKEN
+from secret_config import SESSION_NAME
 
 TIME_TO_WAIT = 15
 
@@ -19,9 +20,13 @@ def time_in_the_city(city_name: str):
 def get_music(client):
     queues = client.queues_list()
     if len(queues) == 0:
+        # нет очередей просушивания
         return -1, -1, -1
     # Последняя проигрываемая очередь всегда в начале списка
     last_queue = client.queue(queues[0].id)
+    if len(last_queue.tracks) == 0:
+        # нет треков в последней очереди прослушивания, например слушает "мою волну"
+        return -1, -1, -1
     last_track_id = last_queue.get_current_track()
     last_track = last_track_id.fetch_track()
     track_id = last_track_id.track_id
@@ -33,7 +38,7 @@ def get_music(client):
 
 
 async def change_tg_bot(line: str):
-    async with telethon.TelegramClient('telegram_session', TG_API_ID, TG_API_HASH) as client:
+    async with telethon.TelegramClient(SESSION_NAME, TG_API_ID, TG_API_HASH) as client:
         await client(telethon.functions.account.UpdateProfileRequest(about=line))
 
 

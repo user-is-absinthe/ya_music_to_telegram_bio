@@ -8,15 +8,31 @@ from secret_config import YA_TOKEN
 
 
 # client = Client.from_credentials(LOGIN, PASSWORD)
-client = Client(YA_TOKEN)
+client = Client(YA_TOKEN, report_new_fields=False)
 
 queues = client.queues_list()
 print(queues)
+print('\n')
 if len(queues) == 0:
     print('Очередь прослушивания куда-то потерялась.')
     sys.exit(1)
+
+for q in queues:
+    data = client.queue(q.id)
+    print(data)
+
+# sys.exit(1)
+
 # Последняя проигрываемая очередь всегда в начале списка
 last_queue = client.queue(queues[0].id)
+
+print(queues[0].id)
+
+print(last_queue)
+
+if len(last_queue.tracks) == 0:
+    sys.exit(1)
+# sys.exit(1)
 
 last_track_id = last_queue.get_current_track()
 last_track = last_track_id.fetch_track()

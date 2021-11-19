@@ -20,6 +20,7 @@ YA_TOKEN = r'token_from_yandex_music'
 # telegram:
 TG_API_ID = r'telegram_api_id'
 TG_API_HASH = r'telegram_api_id_hash'
+SESSION_NAME = r'telegram_session'
 ```
 
 - Где токен для музыки можно получить по ссылке 
