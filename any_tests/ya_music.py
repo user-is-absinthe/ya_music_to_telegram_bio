@@ -53,6 +53,9 @@ line = f'Сейчас играет: { artists } - { title }: https://music.yande
 print(line)
 print(len(line))
 
+line_only_name = f'🎧 { title }: https://music.yandex.com/track/{ track_id }'
+print(line_only_name)
+print(len(line_only_name))
 
 # а тут надо помнить,
 # что ограничение на длину био -

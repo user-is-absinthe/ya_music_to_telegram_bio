@@ -10,6 +10,7 @@ from secret_config import YA_TOKEN
 from secret_config import SESSION_NAME
 
 TIME_TO_WAIT = 15
+TG_BIO_LEN = 70
 
 
 def time_in_the_city(city_name: str):
@@ -63,6 +64,10 @@ def main():
                 music_info[0],
                 music_info[1],
             )
+            if len(this_line) >= 70:
+                this_line = '🎧: https://music.yandex.com/track/{0}'.format(
+                    music_info[1],
+                )
             next_track_time = time.time() + music_info[2]
             last_track_id = now_track_id
         elif time.time() <= next_track_time:
@@ -74,11 +79,22 @@ def main():
             # this_line = 'Something went wrong.'
             this_line = time_in_the_city('Moscow')
 
+        # print(this_line)
+        # print(len(this_line))
         try:
             asyncio.run(change_tg_bot(this_line))
         except telethon.errors.FloodWaitError as e:
             time.sleep(e.seconds)
+        except telethon.errors.rpcerrorlist.AboutTooLongError as e:
+            # слишком длинное описание, скорее всего изз-за музыки
+            time.sleep(TIME_TO_WAIT)
+            pass
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        asyncio.run(change_tg_bot(''))
+    finally:
+        print('exit')
